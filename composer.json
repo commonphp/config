@@ -1,0 +1,29 @@
+{
+  "name": "comphp/config",
+  "type": "library",
+  "description": "Provides read/write access to configuration files",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "timothy.mcclatchey",
+      "email": "timothy@commonphp.org"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "CommonPHP\\Configuration\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "CommonPHP\\Tests\\Configuration\\": "tests/"
+    }
+  },
+  "require": {
+    "php": "^8.3",
+    "comphp/drivers": "^0.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.5.9"
+  }
+}
