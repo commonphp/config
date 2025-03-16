@@ -1,0 +1,25 @@
+{
+  "name": "comphp/config",
+  "description": "Library designed to simplify the management of configuration files in PHP applications. It leverages the power of dynamic driver loading and custom behaviors to provide a highly adaptable solution for application configuration.",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Neuron\\Configuration\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "NeuronTests\\Configuration\\": "test/"
+    }
+  },
+  "require": {
+    "php": "^8.4",
+    "psr/container": "^2.0",
+    "psr/log": "^3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^12.0",
+    "php-di/php-di": "^7.0",
+    "comphp/logging": "^0.1"
+  }
+}

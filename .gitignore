@@ -1,0 +1,11 @@
+# Composer dependencies
+/vendor/
+
+# Composer lock file (optional—commit if you want reproducible builds)
+/composer.lock
+
+# PHPStorm settings
+.idea/
+
+# Log files
+*.log
