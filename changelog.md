@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 ## [0.2.0] - 2025-03-15
 
 ### Added
-- Refactored `EventDispatcher` to improve efficiency and align with PSR-14.
-- Introduced `ListenerInterface` for structured event handling.
-- Added support for prioritized listeners using `SplPriorityQueue`.
-- Implemented `StoppableEventInterface` for event propagation control.
-- Improved exception handling with `InvalidEventException` and `InvalidListenerException`.
-
+- Initial release of `comphp/config`, a modular and extensible configuration management library.
+- Support for **JSON** and **PHP** configuration file parsing.
+- **Dot-notation access** for nested configuration values.
+- **Merge strategies** (`Replace`, `Merge`, `Ignore`, `Error`) for handling configuration overrides.
+- **ParserRegistry** for dynamic parser registration, supporting both **prefix-based** and **suffix-based** resolution.
+- **Exception handling** for missing files, invalid formats, and duplicate parsers.
+- **PSR-11 compatibility** with dependency injection container integration.
+- **Unit tests** covering core functionality.
+- **Comprehensive documentation** including examples and setup guide.
