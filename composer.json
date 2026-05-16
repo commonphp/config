@@ -1,6 +1,5 @@
 {
   "name": "comphp/config",
-  "version": "0.3",
   "description": "Library designed to simplify the management of configuration files in PHP applications. It leverages the power of dynamic driver loading and custom behaviors to provide a highly adaptable solution for application configuration.",
   "license": "MIT",
   "autoload": {
