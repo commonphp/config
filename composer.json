@@ -1,7 +1,9 @@
 {
   "name": "comphp/config",
-  "description": "Library designed to simplify the management of configuration files in PHP applications. It leverages the power of dynamic driver loading and custom behaviors to provide a highly adaptable solution for application configuration.",
+  "type": "library",
+  "description": "Configuration loading, organization, and access for PHP applications.",
   "license": "MIT",
+  "version": "0.3",
   "autoload": {
     "psr-4": {
       "CommonPHP\\Config\\": "src/"
@@ -13,14 +15,13 @@
     }
   },
   "require": {
-    "php": "^8.4",
+    "php": "^8.5",
     "psr/container": "^2.0",
     "psr/log": "^3.0",
     "comphp/runtime": "v0.3"
   },
   "require-dev": {
-    "phpunit/phpunit": "^12.0",
-    "php-di/php-di": "^7.0",
-    "comphp/logging": "^0.1"
+    "phpunit/phpunit": "^13.1",
+    "friendsofphp/php-cs-fixer": "^3.95"
   }
 }
