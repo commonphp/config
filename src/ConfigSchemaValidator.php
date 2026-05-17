@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CommonPHP\Config;
 
 use CommonPHP\Config\Contracts\ConfigSchemaInterface;
+use CommonPHP\Config\Exceptions\ConfigSchemaException;
 use CommonPHP\Config\Exceptions\ConfigValidationException;
 
 final class ConfigSchemaValidator
@@ -72,7 +73,7 @@ final class ConfigSchemaValidator
             $errors[] = 'Configuration key ' . $field . ' contains an unsupported value.';
         }
 
-        if (isset($rule['pattern']) && is_string($value) && preg_match($rule['pattern'], $value) !== 1) {
+        if (isset($rule['pattern']) && is_string($value) && !$this->matchesPattern($rule['pattern'], $value)) {
             $errors[] = 'Configuration key ' . $field . ' does not match the required pattern.';
         }
 
@@ -153,8 +154,20 @@ final class ConfigSchemaValidator
             );
         }
 
-        if (isset($definition['callback']) && is_callable($definition['callback'])) {
-            $rule['callbacks'][] = $definition['callback'];
+        if (array_key_exists('callback', $definition)) {
+            $rule = $this->addCallback($rule, $definition['callback']);
+        }
+
+        if (array_key_exists('callbacks', $definition)) {
+            $callbacks = [$definition['callbacks']];
+
+            if (!is_callable($definition['callbacks']) && is_array($definition['callbacks'])) {
+                $callbacks = $definition['callbacks'];
+            }
+
+            foreach ($callbacks as $callback) {
+                $rule = $this->addCallback($rule, $callback);
+            }
         }
 
         return $rule;
@@ -260,14 +273,51 @@ final class ConfigSchemaValidator
             'string' => is_string($value),
             'integer' => is_int($value),
             'float' => is_float($value),
-            'number' => is_int($value) || is_float($value),
+            'number' => is_int($value) || is_float($value) || (is_string($value) && is_numeric($value)),
             'boolean' => is_bool($value),
             'array' => is_array($value),
             'list' => is_array($value) && array_is_list($value),
+            'iterable' => is_iterable($value),
             'scalar' => is_scalar($value),
             'callable' => is_callable($value),
             'object' => is_object($value),
             default => is_object($value) && is_a($value, $type),
         };
+    }
+
+    private function addCallback(array $rule, mixed $callback): array
+    {
+        if (!is_callable($callback)) {
+            throw new ConfigSchemaException('Configuration schema callbacks must be callable.');
+        }
+
+        $rule['callbacks'][] = $callback;
+
+        return $rule;
+    }
+
+    private function matchesPattern(string $pattern, string $value): bool
+    {
+        $error = null;
+
+        set_error_handler(static function (int $severity, string $message) use (&$error): bool {
+            $error = $message;
+
+            return true;
+        });
+
+        try {
+            $result = preg_match($pattern, $value);
+        } finally {
+            restore_error_handler();
+        }
+
+        if ($result === false) {
+            throw new ConfigSchemaException(
+                'Invalid configuration schema pattern' . ($error !== null ? ': ' . $error : '.')
+            );
+        }
+
+        return $result === 1;
     }
 }

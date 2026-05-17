@@ -15,6 +15,10 @@ interface ConfigProviderInterface
         string $path,
         ?string $format = null,
         array $defaults = [],
+        ?ConfigSchemaInterface $schema = null,
+        bool $required = true,
+        bool $writable = true,
+        bool $mergeDefaults = true,
     ): static;
 
     public function hasDefinition(string $key): bool;

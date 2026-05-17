@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CommonPHP\Config\Tests\Unit;
 
 use CommonPHP\Config\ConfigSchemaValidator;
+use CommonPHP\Config\Exceptions\ConfigSchemaException;
 use CommonPHP\Config\Exceptions\ConfigValidationException;
 use CommonPHP\Config\Tests\Fixtures\FixtureSchema;
 use PHPUnit\Framework\TestCase;
@@ -67,8 +68,10 @@ final class ConfigSchemaValidatorTest extends TestCase
             'double' => 1.5,
             'numeric_int' => 1,
             'numeric_float' => 1.5,
+            'numeric_string' => '1.5',
             'array' => ['key' => 'value'],
             'list' => ['value'],
+            'iterable' => new \ArrayIterator(['value']),
             'scalar' => 'value',
             'callable' => $callable,
             'object' => $object,
@@ -81,8 +84,10 @@ final class ConfigSchemaValidatorTest extends TestCase
             'double' => 'double',
             'numeric_int' => 'numeric',
             'numeric_float' => 'number',
+            'numeric_string' => 'numeric',
             'array' => 'array',
             'list' => 'list',
+            'iterable' => 'iterable',
             'scalar' => 'scalar',
             'callable' => 'callable',
             'object' => 'object',
@@ -143,11 +148,40 @@ final class ConfigSchemaValidatorTest extends TestCase
             'name' => 'demo',
             'mode' => 'safe',
             'count' => 2,
+            'callbacks' => 3,
         ], [
             'name' => ['required' => true, 'type' => 'string'],
             'mode' => ['types' => ['string'], 'rules' => ['required'], 'allowed' => ['safe']],
             'count' => ['type' => 'integer', 'callback' => static fn (mixed $value): bool => $value === 2],
+            'callbacks' => [
+                'type' => 'integer',
+                'callbacks' => [
+                    static fn (mixed $value): bool => $value > 0,
+                    static fn (mixed $value): bool => $value < 10,
+                ],
+            ],
         ]));
+    }
+
+    public function testInvalidCallbacksAndPatternsThrowSchemaExceptions(): void
+    {
+        $validator = new ConfigSchemaValidator();
+
+        try {
+            $validator->validate(['name' => 'demo'], [
+                'name' => ['callback' => 'not_a_callable'],
+            ]);
+
+            self::fail('Invalid callbacks should fail as schema errors.');
+        } catch (ConfigSchemaException) {
+            self::assertTrue(true);
+        }
+
+        $this->expectException(ConfigSchemaException::class);
+
+        $validator->validate(['name' => 'demo'], [
+            'name' => ['pattern' => '/unterminated'],
+        ]);
     }
 
     public function testAssertValidThrowsWhenErrorsArePresent(): void

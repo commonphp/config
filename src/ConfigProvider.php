@@ -7,6 +7,7 @@ namespace CommonPHP\Config;
 use CommonPHP\Config\Contracts\ConfigDriverInterface;
 use CommonPHP\Config\Contracts\ConfigProviderInterface;
 use CommonPHP\Config\Contracts\ConfigRepositoryInterface;
+use CommonPHP\Config\Contracts\ConfigSchemaInterface;
 use CommonPHP\Config\Exceptions\ConfigDriverException;
 use CommonPHP\Config\Exceptions\ConfigNotFoundException;
 use CommonPHP\Config\Exceptions\ConfigValidationException;
@@ -63,8 +64,15 @@ final class ConfigProvider implements ConfigProviderInterface
         string $path,
         ?string $format = null,
         array $defaults = [],
+        ?ConfigSchemaInterface $schema = null,
+        bool $required = true,
+        bool $writable = true,
+        bool $mergeDefaults = true,
     ): static {
-        $this->define($key, ConfigDefinition::file($path, $format, $defaults));
+        $this->define(
+            $key,
+            ConfigDefinition::file($path, $format, $defaults, $schema, $required, $writable, $mergeDefaults),
+        );
 
         return $this;
     }

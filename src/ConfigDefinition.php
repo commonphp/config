@@ -29,8 +29,10 @@ final class ConfigDefinition
         array $defaults = [],
         ?ConfigSchemaInterface $schema = null,
         bool $required = true,
+        bool $writable = true,
+        bool $mergeDefaults = true,
     ): self {
-        return new self($path, $format, $defaults, $schema, $required);
+        return new self($path, $format, $defaults, $schema, $required, $writable, $mergeDefaults);
     }
 
     public function path(): string
@@ -100,6 +102,19 @@ final class ConfigDefinition
             $this->path,
             $this->format,
             $defaults,
+            $this->schema,
+            $this->required,
+            $this->writable,
+            $mergeDefaults,
+        );
+    }
+
+    public function withMergeDefaults(bool $mergeDefaults = true): self
+    {
+        return new self(
+            $this->path,
+            $this->format,
+            $this->defaults,
             $this->schema,
             $this->required,
             $this->writable,

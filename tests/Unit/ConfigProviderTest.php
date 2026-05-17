@@ -57,13 +57,27 @@ final class ConfigProviderTest extends TestCase
     public function testDefineFileIsAConvenienceMethod(): void
     {
         $provider = $this->provider();
+        $schema = new FixtureSchema(['name' => 'required|string']);
 
-        $result = $provider->defineFile('app', 'config/app.mem', 'mem', ['name' => 'demo']);
+        $result = $provider->defineFile(
+            'app',
+            'config/app.mem',
+            'mem',
+            ['name' => 'demo'],
+            $schema,
+            false,
+            false,
+            false,
+        );
 
         self::assertSame($provider, $result);
         self::assertSame('config/app.mem', $provider->definition('app')->path());
         self::assertSame('mem', $provider->definition('app')->format());
         self::assertSame(['name' => 'demo'], $provider->definition('app')->defaults());
+        self::assertSame($schema, $provider->definition('app')->schema());
+        self::assertFalse($provider->definition('app')->isRequired());
+        self::assertFalse($provider->definition('app')->isWritable());
+        self::assertFalse($provider->definition('app')->shouldMergeDefaults());
     }
 
     public function testMissingDefinitionThrows(): void

@@ -46,6 +46,28 @@ final class ConfigDefinitionTest extends TestCase
         self::assertTrue($definition->shouldMergeDefaults());
     }
 
+    public function testFileFactoryAcceptsFullDefinitionState(): void
+    {
+        $schema = new FixtureSchema(['name' => 'required|string']);
+        $definition = ConfigDefinition::file(
+            'config/app.json',
+            'json',
+            ['debug' => false],
+            $schema,
+            false,
+            false,
+            false,
+        );
+
+        self::assertSame('config/app.json', $definition->path());
+        self::assertSame('json', $definition->format());
+        self::assertSame(['debug' => false], $definition->defaults());
+        self::assertSame($schema, $definition->schema());
+        self::assertFalse($definition->isRequired());
+        self::assertFalse($definition->isWritable());
+        self::assertFalse($definition->shouldMergeDefaults());
+    }
+
     public function testImmutableModifiersReturnUpdatedDefinitions(): void
     {
         $schema = new FixtureSchema(['name' => 'required|string']);
@@ -55,6 +77,7 @@ final class ConfigDefinitionTest extends TestCase
         $withPath = $definition->withPath('config/app.php');
         $withFormat = $definition->withFormat('php');
         $withDefaults = $definition->withDefaults(['debug' => true], false);
+        $withMergeDefaults = $withDefaults->withMergeDefaults();
         $withSchema = $definition->withSchema($replacementSchema);
         $optional = $definition->optional();
         $required = $optional->required();
@@ -66,6 +89,8 @@ final class ConfigDefinitionTest extends TestCase
         self::assertSame('php', $withFormat->format());
         self::assertSame(['debug' => true], $withDefaults->defaults());
         self::assertFalse($withDefaults->shouldMergeDefaults());
+        self::assertTrue($withMergeDefaults->shouldMergeDefaults());
+        self::assertSame(['debug' => true], $withMergeDefaults->defaults());
         self::assertSame($replacementSchema, $withSchema->schema());
         self::assertFalse($optional->isRequired());
         self::assertTrue($required->isRequired());
