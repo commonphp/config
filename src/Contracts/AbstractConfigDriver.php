@@ -9,6 +9,10 @@ use CommonPHP\Config\Exceptions\ConfigWriteException;
 
 abstract class AbstractConfigDriver implements ConfigDriverInterface
 {
+    public function getName(): string
+    {
+        return static::class;
+    }
 
     public function read(string $filename): array
     {

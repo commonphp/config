@@ -35,6 +35,7 @@ Read, write, parse, validation, and unsupported format failures should throw Com
 
 ## Documentation
 
+- [Documentation index](docs/index.md)
 - [Usage](docs/usage.md)
 - [Testing](TESTING.md)
 - [Contributing](CONTRIBUTING.md)

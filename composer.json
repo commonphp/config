@@ -18,7 +18,7 @@
     "php": "^8.5",
     "psr/container": "^2.0",
     "psr/log": "^3.0",
-    "comphp/runtime": "v0.3"
+    "comphp/runtime": "^0.3"
   },
   "require-dev": {
     "phpunit/phpunit": "^13.1",
